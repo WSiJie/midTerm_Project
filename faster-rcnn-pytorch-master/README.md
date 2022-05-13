@@ -66,7 +66,7 @@ annotation_mode =2
 
 运行`train.py`
 
-运行之前，会自动加载backbone网络，这里代码部分默认加载ResNet50网络(主干网络需要存于model_data目录中)
+运行之前，会自动加载backbone网络，这里代码部分默认加载ResNet50网络(backbone网络权重需要存于model_data目录中)
 
 ```python
 model_path = 'model_data/voc_weights_resnet.pth'
@@ -76,7 +76,7 @@ model_path = 'model_data/voc_weights_resnet.pth'
 backbone = "resnet50"
 ```
 
-相关主干权重网络百度网盘链接如下：
+相关backbone网络权重百度网盘链接如下：
 + [backbone网络权重文件](https://pan.baidu.com/s/1CPywMMEv1xkXj6wU78GZKQ?pwd=0001)
 + 密码：0001
 
@@ -90,22 +90,79 @@ backbone = "resnet50"
 
 在同一坐标下展示如下：
 
-<div align=center><img width="900", img height="500", src=https://user-images.githubusercontent.com/102893895/168324776-a5f15ace-c26b-4d9f-ad4d-f7b9bfb64b6c.png></div>
-
-
+<div align=center><img width="1000" img height="500" src=https://user-images.githubusercontent.com/102893895/168324776-a5f15ace-c26b-4d9f-ad4d-f7b9bfb64b6c.png></div>
 
 ## 模型测试
+在测试模型阶段，我们需要载入已经训练好的参数文件：在`frcnn.py`文件中将模型读取路径修改为(权重文件需要存于logs目录中)：
+
+```python
+"model_path": 'logs/last_epoch_weights.pth'
+```
+
+训练好的权重百度网盘链接如下：
++ [Faster R-CNN网络权重文件](https://pan.baidu.com/s/1C-F6kTTuc4FDw0gtHHFMcQ?pwd=0002)
++ 密码：0002
+
+### mAP
+模型训练完毕后，我们对各个类别的AP曲线进行了绘制，存于`map_out`文件夹中，例如自行车和沙发类别的AP曲线如下图所示：
+
+<img src="https://user-images.githubusercontent.com/102893895/168334822-3db18c84-847e-4d6e-a549-4b5ef97a8702.png"><img src="https://user-images.githubusercontent.com/102893895/168334861-c9deaa44-d669-4d6a-912b-6e9312d1965f.png">
+
+各类别汇总的对数错分率和mAP如下图所示：
+
+<img src="https://user-images.githubusercontent.com/102893895/168335124-d34a3946-12c0-4314-bbfb-de6d05e43c89.png"><img src="https://user-images.githubusercontent.com/102893895/168335141-812f3a9e-a24a-4ffd-8cb0-4bd7950092e0.png">
 
 
 
+### 在四张测试图像上可视化Faster R-CNN第一阶段的proposal box
+事实上源代码中并没有专门可视化proposal box的代码块，因此我们通过研究源代码后发现若要可视化proposal box则可在源代码基础上做一些更改：
 
+第一步，在`frcnn.py`中修改222行代码(将c改为1)，注释223、224行代码：
 
+```python
+    draw.rectangle([left + i, top + i, right - i, bottom - i], outline=self.colors[1])
+# draw.rectangle([tuple(text_origin), tuple(text_origin + label_size)], fill=self.colors[c])
+# draw.text(text_origin, str(label,'UTF-8'), fill=(0, 0, 0), font=font)
+```
 
+第二步，在`utils/utils_bbox.py`中于81行以及97行后各添加一行代码：
 
+```python
+cls_bbox = roi
+```
 
+```python
+confidence =0
+```
 
+第三步，为了不至于使proposal box数量过多，还需在`nets/rpn.py`中修改第18、19行代码为：
 
+```python
+n_test_pre_nms = 300,
+n_test_post_nms = 100,
+```
 
-保存模型百度网盘链接
+四张测试图像上的proposal box与其最终的检测结果对比如下：
+
+<img src="https://user-images.githubusercontent.com/102893895/168331644-c7172cd6-fd10-436f-86ce-75bd5a3f2c8d.png"><img src="https://user-images.githubusercontent.com/102893895/168331689-cad45fa5-7207-4adb-bac1-9c3f80f6e2c6.png">
+
+<img src="https://user-images.githubusercontent.com/102893895/168333346-e46ceb9e-1173-4848-bfd5-f3d7cc22dc16.png"><img src="https://user-images.githubusercontent.com/102893895/168333235-c0bd5082-8aca-4b7c-8b24-f8715b6b054c.png">
+
+<img src="https://user-images.githubusercontent.com/102893895/168333377-99b00999-4cef-4f4e-8e9b-e26e4f8fe93d.png"><img src="https://user-images.githubusercontent.com/102893895/168333279-4f371aac-6e46-4cdd-881b-4122a1411452.png">
+
+<img src="https://user-images.githubusercontent.com/102893895/168333403-9122b591-11dd-4c6e-b801-3c06fcebf1ec.png"><img src="https://user-images.githubusercontent.com/102893895/168333301-27974f61-5577-4e0a-98b7-c79e3fe1fd19.png">
+
+### 可视化三张VOC集外图像与YOLO V3进行对比
+
+为了能更好第看出算法的性能，我们挑选了三张较难识别的图像，如下图所示：
+
+<img src="https://user-images.githubusercontent.com/102893895/168336657-71cb6bc3-e923-44cf-90c9-f7972a9911b9.png"><img src="https://user-images.githubusercontent.com/102893895/168336743-f11a061d-7952-4432-9863-68c3a36b676e.png">
+
+<img src="https://user-images.githubusercontent.com/102893895/168336845-18f33885-adf3-449e-89f7-9335f9ab4197.png"><img src="https://user-images.githubusercontent.com/102893895/168336870-f35be3a1-b08c-411c-9ddf-0aeadea3132f.png">
+
+<img src="https://user-images.githubusercontent.com/102893895/168336957-4b7c20e8-687c-4de0-8d57-34ac0c8d66ed.png"><img src="https://user-images.githubusercontent.com/102893895/168336978-faf49e9d-83d8-45db-a606-3e42f92ca658.png">
+
+由此可见，YOLO V3相较于Faster R-CNN对物体的检测更加灵敏，对图像中所占像素较少的物体有更强的捕捉能力。
 
 ## Reference
+https://github.com/bubbliiiing/faster-rcnn-pytorch
