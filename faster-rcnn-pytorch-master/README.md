@@ -1,4 +1,7 @@
 # 任务2(Faster R-CNN)
+
+author: 汪思杰21210980016
+
 ## 要求
 在VOC数据集上训练并测试目标检测模型Faster R-CNN；
 
