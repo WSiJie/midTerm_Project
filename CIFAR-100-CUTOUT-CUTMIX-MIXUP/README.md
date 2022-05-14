@@ -1,7 +1,8 @@
 # CIFAR-100-CUTOUT-CUTMIX-MIXUP
-### CIFAR-100数据集介绍：
 
 author: 张飞21210980023
+
+### CIFAR-100数据集介绍：
 
 ![image](https://user-images.githubusercontent.com/83007344/168309761-376b9fad-74b7-407d-b2b9-c4048a98521c.png)
 
