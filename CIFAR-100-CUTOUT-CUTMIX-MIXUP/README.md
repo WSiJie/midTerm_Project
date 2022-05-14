@@ -11,10 +11,15 @@
 ### 其中的参数设置如下：
 
 Batch_size:128
+
 优化器: mini-batch momentum-SGD, 并采用L2正则化
+
 loss function: Cross Entropy Loss
+
 learning_rate: 如下所示：
+
 Epoch    0-28    29-58   59-78   79-99
+
 L_R      0.1     0.02    0.004   0.0008
 
 ### 运行方法：
