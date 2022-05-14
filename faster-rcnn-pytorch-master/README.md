@@ -154,7 +154,7 @@ n_test_post_nms = 100,
 
 ### 可视化三张VOC集外图像与YOLO V3进行对比
 
-为了能更好第看出算法的性能，我们挑选了三张较难识别的图像，如下图所示(对于同一张图，前为Faster R-CNN检测结果，后为YOLO V3检测结果)：
+为了能更好地看出算法的性能，我们挑选了三张较难识别的图像，如下图所示(对于同一张图，前为Faster R-CNN检测结果，后为YOLO V3检测结果)：
 
 <img src="https://user-images.githubusercontent.com/102893895/168336657-71cb6bc3-e923-44cf-90c9-f7972a9911b9.png"><img src="https://user-images.githubusercontent.com/102893895/168336743-f11a061d-7952-4432-9863-68c3a36b676e.png">
 
